@@ -37,7 +37,7 @@ Here's an architectural overview of the Fish Lens app:
 Clone the repository:
 ```bash
 git clone https://github.com/AchinthaDavidson/fish-identification.git
-cd fish-lens
+cd fish-identification
 ```
 Install dependencies:
 ```bash

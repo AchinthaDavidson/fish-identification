@@ -1,9 +1,11 @@
 import { COLORS } from '@/constants';
 import { Stack } from 'expo-router';
-
+import { Provider } from 'react-redux';
+import store from '../../redux/store';
 
 export default function RootLayout() {
   return (
+    <Provider store={store}>
     <Stack
       screenOptions={{
         headerStyle: {
@@ -25,5 +27,6 @@ export default function RootLayout() {
       <Stack.Screen name="size" options={{ title: "Billfish Size Estimation" }} />
       <Stack.Screen name="home" options={{ headerShown: false }} />
     </Stack>
+    </Provider>
   );
 }

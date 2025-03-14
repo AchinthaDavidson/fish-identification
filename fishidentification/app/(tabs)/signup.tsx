@@ -15,7 +15,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, SIZES, FONTS, icons, images } from "../../constants";
 import { useRouter } from "expo-router";
-
+import { useAddUserMutation } from "../../redux/slices/userApiSlice";
 const signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -25,7 +25,7 @@ const signup = () => {
   const [areas, setAreas] = React.useState([]);
   const [selectedArea, setSelectedArea] = React.useState<any>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
-
+  const [addUser, { isLoading, error }] = useAddUserMutation(); 
   React.useEffect(() => {
     fetch("https://restcountries.com/v3.1/all?fields=name,flags,cca3,idd")
       .then((response) => response.json())
@@ -292,8 +292,15 @@ const signup = () => {
 
   function renderButton() {
     const handlesubmit = async () => {
-      console.log(name);
-      router.push("/home");
+      try {
+        const userData = { name, phone, password };
+        await addUser(userData).unwrap(); // Call API
+        router.push("/home");
+        console.log("User registered successfully!");
+      } catch (err) {
+        console.error("Signup failed:", err);
+      }
+     
     };
     return (
       <View style={{ margin: SIZES.padding * 3 }}>

@@ -11,17 +11,22 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, SIZES, FONTS, icons, images } from "../../constants";
 import { useRouter } from "expo-router";
+import { auth } from "../../firebaseconfig"; // Import Firebase auth
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [areas, setAreas] = React.useState([]);
   const [selectedArea, setSelectedArea] = React.useState<any>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -116,7 +121,7 @@ const signup = () => {
         {/* Full Name */}
         <View style={{ marginTop: SIZES.padding * 3 }}>
           <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>
-            User Name
+           Email
           </Text>
           <TextInput
             style={{
@@ -127,11 +132,11 @@ const signup = () => {
               color: COLORS.white,
               ...FONTS.body3,
             }}
-            placeholder="Enter Full Name"
+            placeholder="Enter Email"
             placeholderTextColor={COLORS.white}
             selectionColor={COLORS.white}
-            value={name}
-            onChangeText={setName}
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
 
@@ -186,8 +191,21 @@ const signup = () => {
 
   function renderButton() {
     const handlesubmit = async () => {
-      console.log(name);
-      router.push("/home");
+      if (!email || !password) {
+        Alert.alert("Error", "Email and Password are required!");
+        return;
+      }
+  
+      setLoading(true);
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log("Login successful!");
+        router.push("/home");
+      } catch (error: any) {
+        Alert.alert("Login failed", error.message);
+      } finally {
+        setLoading(false);
+      }
     };
     return (
       <View style={{ margin: SIZES.padding * 3 }}>
@@ -201,66 +219,18 @@ const signup = () => {
           }}
           onPress={handlesubmit}
         >
-          <Text style={{ color: COLORS.white, ...FONTS.h3 ,fontWeight: "bold",}}>Login</Text>
+
+           {loading ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={{ color: COLORS.white, ...FONTS.h3, fontWeight: "bold" }}>Log In</Text>
+        )}
         </TouchableOpacity>
       </View>
     );
   }
 
-  function renderAreaCodesModal() {
-    const renderItem = (item: any) => {
-      return (
-        <TouchableOpacity
-          style={{ padding: SIZES.padding, flexDirection: "row" }}
-          onPress={() => {
-            setSelectedArea(item);
-            setModalVisible(false);
-          }}
-        >
-          <Image
-            source={{ uri: item.flag }}
-            style={{
-              width: 30,
-              height: 30,
-              marginRight: 10,
-            }}
-          />
-          <Text style={{ ...FONTS.body4 }}>{item.name}</Text>
-        </TouchableOpacity>
-      );
-    };
-
-    return (
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
-            <View
-              style={{
-                height: 400,
-                width: SIZES.width * 0.8,
-                backgroundColor: COLORS.lightGreen,
-                borderRadius: SIZES.radius,
-              }}
-            >
-              <FlatList
-                data={areas}
-                renderItem={renderItem}
-                keyExtractor={(item: any) => item.code}
-                showsVerticalScrollIndicator={false}
-                style={{
-                  padding: SIZES.padding * 2,
-                  marginBottom: SIZES.padding * 2,
-                }}
-              />
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    );
-  }
-
+ 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <LinearGradient
@@ -274,7 +244,7 @@ const signup = () => {
           {renderButton()}
         </ScrollView>
       </LinearGradient>
-      {renderAreaCodesModal()}
+ 
     </KeyboardAvoidingView>
   );
 };

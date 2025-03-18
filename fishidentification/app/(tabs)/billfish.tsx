@@ -26,6 +26,7 @@ export default function BillfishScreen() {
   const [predictions, setPredictions] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   // Request permissions on mount
   useEffect(() => {
@@ -86,6 +87,36 @@ export default function BillfishScreen() {
 
       console.log("Most Predicted Fish:", mostFrequentName);
       setResult(mostFrequentName);
+      switch (mostFrequentName) {
+        case "BLACK MARLIN":
+          setDescription(
+            "fast, and powerful predatory fish found in tropical and subtropical oceans. It is one of the fastest fish in the world, capable of reaching speeds over 80 km/h (50 mph)."
+          );
+          break;
+        case "BLUE MARLIN":
+          setDescription(
+            ") is a large, fast, and powerful fish found in tropical and subtropical oceans worldwide. Recognized by its elongated body, cobalt-blue upper body, silvery-white underside, and long, spear-like bill, it is one of the most sought-after game fish."
+          );
+          break;
+        case "SAIL FISH":
+          setDescription(
+            "The Sailfish (Istiophorus platypterus) is one of the fastest fish in the ocean, capable of reaching speeds up to 68 mph (110 km/h). It is easily recognizable by its long, slender body, sharp bill, and a large, sail-like dorsal fin that extends almost the length of its body."
+          );
+          break;
+        case "STRIPED MARLIN":
+          setDescription(
+            "The Striped Marlin (Kajikia audax) is a highly migratory, fast-swimming fish found in the Pacific and Indian Oceans. It is easily recognized by its sleek body, pointed dorsal fin, and distinctive blue vertical stripes that remain visible even after capture."
+          );
+          break;
+        case "SWORD FISH":
+          setDescription(
+            "The Swordfish is a large, fast-swimming predatory fish known for its long, flat, sword-like bill, which it uses to slash and stun prey. Found in tropical and temperate oceans worldwide, Swordfish have a streamlined, torpedo-shaped body with a dark brownish-blue upper side and a lighter underside."
+          );
+          break;
+        default:
+          setDescription("Unknown Fish");
+          break;
+      }
     } catch (error) {
       console.log(error);
       Alert.alert("Error", "Failed to upload images.");
@@ -191,20 +222,26 @@ export default function BillfishScreen() {
             </View>
           ) : (
             <View style={styles.resultContainer}>
-              <Text style={styles.resultText}>
-                Most Predicted Fish: {result}
-              </Text>
-              <ScrollView horizontal style={styles.photoContainer}>
-              {photos.map((photo, index) => (
-                <View key={index} style={styles.photoWrapper}>
-                  <Image source={{ uri: photo }} style={styles.resultImage} />
-                  {/* Close Icon */}
-                 
-                </View>
-              ))}
-            </ScrollView>
+              <Text style={styles.resultText}>Predicted Fish: {result}</Text>
+
+              <View style={styles.imageWrapper}>
+                <ScrollView horizontal style={styles.photoContainer}>
+                  {photos.map((photo, index) => (
+                    <View key={index} style={styles.photoWrapper}>
+                      <Image
+                        source={{ uri: photo }}
+                        style={styles.resultImage}
+                      />
+                    </View>
+                  ))}
+                </ScrollView>
+
+                {/* Add text here, inside the same View, so it appears below images */}
+                <Text style={styles.imageText}>{description}</Text>
+              </View>
             </View>
           )}
+          <Image source={images.footer} style={styles.bottomBackgroundImage} />
         </View>
       )}
     </LinearGradient>
@@ -219,6 +256,18 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end", // Pushes the buttons and photo section to the bottom
     alignItems: "center",
   },
+  imageText: {
+    width: width * 0.8,
+    textAlign: "center",
+    // marginTop: 5,
+    fontSize: 14,
+    color: "#333",
+  },
+  imageWrapper: {
+    alignItems: "center", // Ensures text is centered below images
+    marginTop: 10,
+    height: width*1.2
+  },
   resultContainer: {
     flex: 1,
     alignItems: "center",
@@ -232,6 +281,14 @@ const styles = StyleSheet.create({
   },
   imageScrollView: {
     width: "100%",
+  },
+  bottomBackgroundImage: {
+    position: "absolute", // Ensures the image stays at a fixed position
+    bottom: 0, // Positions the image at the bottom of the screen
+    width: "100%", // Full screen width
+    height: height * 0.3, // Adjust height (30% of the screen height)
+    resizeMode: "cover", // Ensures proper scaling without distortion
+    opacity: 0.15, // Makes the background less intrusive
   },
   resultImage: {
     width: width * 0.8,
@@ -289,7 +346,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5,
+    // elevation: 5,
   },
   button1: {
     backgroundColor: "#ffffff",
@@ -323,6 +380,11 @@ const styles = StyleSheet.create({
   },
   photoContainer: {
     flexDirection: "row",
+  },
+  photoContainer1: {
+    flexDirection: "row",
+    height:30,
+    backgroundColor:"green"
   },
   photo: {
     width: width * 0.2,

@@ -15,6 +15,7 @@ const fish6 = require("../assets/images/fish6.png");
 const fish7 = require("../assets/images/fish7.png");
 const gallery = require("../assets/images/Gallery.png");
 const next = require("../assets/images/next.png");
+const PDL = require("../assets/images/PDL__white.png");
 
 export default {
   wallieLogo,
@@ -33,4 +34,5 @@ export default {
   gallery,
   next,
   usFlag,
+  PDL
 };

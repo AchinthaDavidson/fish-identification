@@ -11,10 +11,16 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, SIZES, FONTS, icons, images } from "../../constants";
 import { useRouter } from "expo-router";
+import { useAddUserMutation } from "../../redux/slices/userApiSlice";
+import { auth, firestore } from "../../firebaseconfig";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const signup = () => {
   const router = useRouter();
@@ -22,10 +28,13 @@ const signup = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [cpassword, setCPassword] = useState("");
+  const [email,setEmail]=useState("");
   const [areas, setAreas] = React.useState([]);
   const [selectedArea, setSelectedArea] = React.useState<any>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
-
+  const [addUser, { isLoading, error }] = useAddUserMutation(); 
+  const [loading, setLoading] = useState(false);
   React.useEffect(() => {
     fetch("https://restcountries.com/v3.1/all?fields=name,flags,cca3,idd")
       .then((response) => response.json())
@@ -132,6 +141,26 @@ const signup = () => {
             selectionColor={COLORS.white}
             value={name}
             onChangeText={setName}
+          />
+        </View>
+        <View style={{ marginTop: SIZES.padding * 3 }}>
+          <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>
+            Email
+          </Text>
+          <TextInput
+            style={{
+              marginVertical: SIZES.padding,
+              borderBottomColor: COLORS.white,
+              borderBottomWidth: 1,
+              height: 40,
+              color: COLORS.white,
+              ...FONTS.body3,
+            }}
+            placeholder="Enter Email"
+            placeholderTextColor={COLORS.white}
+            selectionColor={COLORS.white}
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
 
@@ -263,8 +292,8 @@ const signup = () => {
             placeholderTextColor={COLORS.white}
             selectionColor={COLORS.white}
             secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
+            value={cpassword}
+            onChangeText={setCPassword}
           />
           <TouchableOpacity
             style={{
@@ -291,25 +320,68 @@ const signup = () => {
   }
 
   function renderButton() {
+    
     const handlesubmit = async () => {
-      console.log(name);
+      if (!email || !phone || !password || !cpassword || !name) {
+        Alert.alert("Error", "All fields are required!");
+        return;
+      }
+  
+      if (password !== cpassword) {
+        Alert.alert("Error", "Passwords do not match!");
+        return;
+      }
+  
+      if (!/^\d{6}$/.test(password)) {
+        Alert.alert("Error", "Phone number must be 10 digits!");
+        return;
+      }
+      setLoading(true); // Start loading
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save user data to Firestore
+      const userDocRef = doc(collection(firestore, "users"), user.uid);
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        name,
+        email,
+        phone,
+        createdAt: new Date(),
+      });
+
+      console.log("User registered successfully!");
+
+      // Navigate to home screen
+      setLoading(false); 
       router.push("/home");
+      } catch (err) {
+        console.error("Signup failed:", err);
+      }
+     
     };
     return (
       <View style={{ margin: SIZES.padding * 3 }}>
-        <TouchableOpacity
-          style={{
-            height: 60,
-            backgroundColor: COLORS.black,
-            borderRadius: SIZES.radius / 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={handlesubmit}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h3 ,fontWeight: "bold", }}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={{
+          height: 60,
+          backgroundColor: COLORS.black,
+          borderRadius: SIZES.radius / 1,
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "row",
+        }}
+        onPress={handlesubmit}
+        disabled={loading} // Disable button when loading
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color={COLORS.white} />
+        ) : (
+          <Text style={{ color: COLORS.white, ...FONTS.h3, fontWeight: "bold" }}>Sign Up</Text>
+        )}
+      </TouchableOpacity>
+    </View>
     );
   }
 

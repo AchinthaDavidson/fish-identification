@@ -72,6 +72,16 @@ export default function BillfishScreen() {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
 
+        if (response.data.top1.class == "UNKNOWN") {
+          Alert.alert(
+            "Unknown  image ",
+            "Please try again"
+          );
+
+          setIsCameraReady(true);
+          setLoading(false);
+          return;
+        }
         results.push(response.data.top1.class);
       }
       console.log(results);
@@ -266,7 +276,7 @@ const styles = StyleSheet.create({
   imageWrapper: {
     alignItems: "center", // Ensures text is centered below images
     marginTop: 10,
-    height: width*1.2
+    height: width * 1.2,
   },
   resultContainer: {
     flex: 1,
@@ -383,8 +393,8 @@ const styles = StyleSheet.create({
   },
   photoContainer1: {
     flexDirection: "row",
-    height:30,
-    backgroundColor:"green"
+    height: 30,
+    backgroundColor: "green",
   },
   photo: {
     width: width * 0.2,

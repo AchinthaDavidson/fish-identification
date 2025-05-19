@@ -58,21 +58,22 @@ export default function BillfishScreen() {
     try {
       const results: string[] = [];
 
+
       for (const photo of photos) {
         const formData = new FormData();
-        formData.append("image", {
+        formData.append("file", {
           uri: photo,
           name: "image.jpg",
           type: "image/jpeg",
         } as any);
 
         const response = await axios.post(
-          "https://asia-south1-rare-responder-448817-m4.cloudfunctions.net/billfish",
+          "https://asia-south1-rare-responder-448817-m4.cloudfunctions.net/fish_freshnaes",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
 
-        results.push(response.data.top1.class);
+        results.push(response.data.predicted_class);
       }
       console.log(results);
       const countMap: Record<string, number> = results.reduce((acc, name) => {
@@ -86,25 +87,18 @@ export default function BillfishScreen() {
       );
 
       console.log("Most Predicted Fish:", mostFrequentName);
-      // setResult(mostFrequentName);
-      setResult("non-fresh");
+      
+   
       switch (mostFrequentName) {
-        case "BLACK MARLIN":
-          setDescription("BLACK MARLIN");
-          setResult("non-fresh");
+        case "non-fresh":
+          // setDescription("BLACK MARLIN");
+          setResult("This is a edible fish");
           break;
-        case "BLUE MARLIN":
-          setDescription("BLUE MARLIN");
+        case "fresh":
+          // setDescription("BLUE MARLIN");
+          setResult("This is not edible");
           break;
-        case "SAIL FISH":
-          setDescription("SAIL FISH");
-          break;
-        case "STRIPED MARLIN":
-          setDescription("STRIPED MARLIN");
-          break;
-        case "SWORD FISH":
-          setDescription("SWORD FISH");
-          break;
+        
         default:
           setDescription("Unknown Fish");
           break;
@@ -220,7 +214,7 @@ export default function BillfishScreen() {
                 <View key={index} style={styles.photoWrapper}>
                   <Image source={{ uri: photo }} style={styles.resultImage} />
                   <Text style={styles.resultText}>
-               Predicted Quality: {result}
+                {result}
               </Text>
                   {/* <Text style={styles.imageText}>{description}</Text> */}
                 </View>

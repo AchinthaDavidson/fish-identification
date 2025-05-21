@@ -89,19 +89,29 @@ export default function BillfishScreen() {
       setResult(mostFrequentName);
       switch (mostFrequentName) {
         case "Blue Shark":
-          setDescription("The Blue Shark is a sleek, deep-water shark with a distinctive long, slender body and bright blue coloration. It is widely distributed in temperate and tropical oceans. Known for its long migratory patterns, it can travel thousands of kilometers. Blue Sharks primarily feed on squid and small fish, and they give birth to live young (viviparous), with litters ranging from 25 to over 100 pups.");
+          setDescription(
+            "The Blue Shark is a sleek, deep-water shark with a distinctive long, slender body and bright blue coloration. It is widely distributed in temperate and tropical oceans. Known for its long migratory patterns, it can travel thousands of kilometers. Blue Sharks primarily feed on squid and small fish, and they give birth to live young (viviparous), with litters ranging from 25 to over 100 pups."
+          );
           break;
         case "Nurse Shark":
-          setDescription("Nurse Sharks are slow-moving, bottom-dwelling sharks commonly found in warm, shallow coastal waters. They have a stout body, small eyes, and barbels near their mouth that help them detect prey such as crustaceans and small fish. Unlike many sharks, Nurse Sharks are non-aggressive and often rest in groups during the day. They are ovoviviparous, meaning they give birth to live young after eggs hatch inside the mother.");
+          setDescription(
+            "Nurse Sharks are slow-moving, bottom-dwelling sharks commonly found in warm, shallow coastal waters. They have a stout body, small eyes, and barbels near their mouth that help them detect prey such as crustaceans and small fish. Unlike many sharks, Nurse Sharks are non-aggressive and often rest in groups during the day. They are ovoviviparous, meaning they give birth to live young after eggs hatch inside the mother."
+          );
           break;
         case "Whale Shark":
-          setDescription("The Whale Shark is the largest fish species in the world, reaching lengths of up to 18 meters (60 feet). Despite its size, it is a gentle filter feeder, primarily consuming plankton, krill, and small fish by passively filtering water through its massive mouth. Whale Sharks are found in warm ocean waters and are known for their slow, docile nature, making them a popular species for scientific research and ecotourism. They are classified as endangered due to overfishing and habitat destruction.");
+          setDescription(
+            "The Whale Shark is the largest fish species in the world, reaching lengths of up to 18 meters (60 feet). Despite its size, it is a gentle filter feeder, primarily consuming plankton, krill, and small fish by passively filtering water through its massive mouth. Whale Sharks are found in warm ocean waters and are known for their slow, docile nature, making them a popular species for scientific research and ecotourism. They are classified as endangered due to overfishing and habitat destruction."
+          );
           break;
         case "Tiger Shark":
-          setDescription("The Tiger Shark is a large, powerful predator known for its distinctive dark stripes along its body, resembling a tiger’s pattern. It is a highly adaptable species found in tropical and subtropical waters worldwide. Tiger Sharks are opportunistic feeders with a varied diet, including fish, sea turtles, seabirds, and even inedible objects. They have one of the strongest bite forces among sharks and play a crucial role in maintaining marine ecosystem balance.");
+          setDescription(
+            "The Tiger Shark is a large, powerful predator known for its distinctive dark stripes along its body, resembling a tiger’s pattern. It is a highly adaptable species found in tropical and subtropical waters worldwide. Tiger Sharks are opportunistic feeders with a varied diet, including fish, sea turtles, seabirds, and even inedible objects. They have one of the strongest bite forces among sharks and play a crucial role in maintaining marine ecosystem balance."
+          );
           break;
         case "Hammerhead Shark":
-          setDescription("Hammerhead Sharks are easily recognizable due to their unique hammer-shaped heads, known as cephalofoils, which enhance their sensory abilities. This adaptation allows them to detect prey buried in the sand. There are several species within the hammerhead family, with the Great Hammerhead (Sphyrna mokarran) being the largest. They are found in coastal and open ocean environments and are known for their schooling behavior, especially during the daytime.");
+          setDescription(
+            "Hammerhead Sharks are easily recognizable due to their unique hammer-shaped heads, known as cephalofoils, which enhance their sensory abilities. This adaptation allows them to detect prey buried in the sand. There are several species within the hammerhead family, with the Great Hammerhead (Sphyrna mokarran) being the largest. They are found in coastal and open ocean environments and are known for their schooling behavior, especially during the daytime."
+          );
           break;
         default:
           setDescription("Unknown Fish");
@@ -212,22 +222,20 @@ export default function BillfishScreen() {
             </View>
           ) : (
             <View style={styles.resultContainer}>
-              <Text style={styles.resultText}>
-               Predicted Fish: {result}
-              </Text>
+              <Text style={styles.resultText}>Predicted Fish: {result}</Text>
               <View style={styles.imageWrapper}>
-              <ScrollView horizontal style={styles.photoContainer}>
-              {photos.map((photo, index) => (
-                <View key={index} style={styles.photoWrapper}>
-                  <Image source={{ uri: photo }} style={styles.resultImage} />
-                 
-                  
-                </View>
-              ))}
-            </ScrollView>
-            <Text style={styles.imageText}>{description}</Text>
-            </View>
-            
+                <ScrollView horizontal style={styles.photoContainer}>
+                  {photos.map((photo, index) => (
+                    <View key={index} style={styles.photoWrapper}>
+                      <Image
+                        source={{ uri: photo }}
+                        style={styles.resultImage}
+                      />
+                    </View>
+                  ))}
+                </ScrollView>
+                <Text style={styles.imageText}>{description}</Text>
+              </View>
             </View>
           )}
           <Image source={images.footer} style={styles.bottomBackgroundImage} />
@@ -246,17 +254,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   imageText: {
-    width:width*0.8,
-    textAlign: 'center',
+    width: width * 0.8,
+    textAlign: "center",
     marginTop: 5,
     fontSize: 14,
-    color: '#333',
-    
+    color: "#333",
   },
   imageWrapper: {
     alignItems: "center", // Ensures text is centered below images
     marginTop: 10,
-    height: width*1.3
+    height: width * 1.3,
   },
   resultContainer: {
     flex: 1,
@@ -411,3 +418,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
+// This is a test comment

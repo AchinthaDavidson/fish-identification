@@ -18,8 +18,7 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
-          cache-dependency-path: fish-identification
-
+          cache-dependency-path: fishidentification/package-lock.json
       - name: Install Dependencies
         run: npm ci
         working-directory: fish-identification

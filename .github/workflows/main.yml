@@ -17,10 +17,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "yarn"
+          cache: "npm"
+          cache-dependency-path: fish-identification/package-lock.json
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
+        working-directory: fish-identification
 
       - name: Install Expo CLI
         run: npm install -g eas-cli
@@ -30,10 +32,11 @@ jobs:
 
       - name: Build APK with EAS
         run: eas build --platform android --profile production --non-interactive
+        working-directory: fish-identification
 
       - name: Get Latest APK Path
         run: |
-          APK_PATH=$(ls -t build/**/*.apk | head -n 1)
+          APK_PATH=$(ls -t fish-identification/build/**/*.apk | head -n 1)
           echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
 
       - name: Upload APK to GitHub Releases

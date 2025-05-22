@@ -28,18 +28,24 @@ jobs:
         run: npm install -g eas-cli@latest
 
       - name: Build APK with EAS
-        run: eas build --platform android --profile production --non-interactive
+        run: eas build --platform android --profile production --non-interactive --wait
         working-directory: fishidentification
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Install jq for JSON parsing
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Download APK from Expo
         run: |
-          BUILD_URL=$(eas build:list --platform android --limit 1 --non-interactive --json | jq -r '.[0].artifacts.buildUrl')
-          echo "Downloading from $BUILD_URL"
+          BUILD_JSON=$(eas build:list --platform android --limit 1 --non-interactive --json)
+          echo "$BUILD_JSON" | jq .
+
+          BUILD_URL=$(echo "$BUILD_JSON" | jq -r '.[0].artifacts.buildUrl')
+
+          if [ "$BUILD_URL" = "null" ] || [ -z "$BUILD_URL" ]; then
+            echo "❌ APK download URL not found."
+            exit 1
+          fi
+
+          echo "✅ Downloading from $BUILD_URL"
           curl -o app-release.apk "$BUILD_URL"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}

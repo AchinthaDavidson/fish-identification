@@ -34,6 +34,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Download APK from Expo
+        working-directory: fishidentification
         run: |
           BUILD_JSON=$(eas build:list --platform android --limit 1 --non-interactive --json)
           echo "$BUILD_JSON" | jq .
@@ -46,7 +47,7 @@ jobs:
           fi
 
           echo "✅ Downloading from $BUILD_URL"
-          curl -o app-release.apk "$BUILD_URL"
+          curl -o ../app-release.apk "$BUILD_URL"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
